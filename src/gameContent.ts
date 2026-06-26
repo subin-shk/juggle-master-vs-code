@@ -24,7 +24,7 @@ export function getWebviewContent(
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="${csp}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Football Juggle Challenge</title>
+<title>Juggle Master</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -64,28 +64,32 @@ export function getWebviewContent(
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: 6px clamp(6px, 3%, 12px);
     background: var(--panel);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
-    min-height: 52px;
+    min-height: 46px;
+    gap: 4px;
+    position: relative;
   }
 
   .score-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 54px;
+    min-width: 0;
+    flex: 1;
   }
   .score-label {
-    font-size: 9px;
+    font-size: clamp(7px, 2.5vw, 9px);
     font-weight: 700;
     letter-spacing: 1px;
     color: var(--text-muted);
     text-transform: uppercase;
+    white-space: nowrap;
   }
   .score-value {
-    font-size: 22px;
+    font-size: clamp(16px, 6vw, 22px);
     font-weight: 800;
     line-height: 1;
     color: var(--accent);
@@ -102,15 +106,32 @@ export function getWebviewContent(
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-shrink: 0;
+    gap: 6px;
   }
-  .title-emoji { font-size: 20px; line-height: 1; }
+  .title-emoji { font-size: clamp(16px, 5vw, 20px); line-height: 1; }
   .title-text {
-    font-size: 9px;
+    font-size: clamp(7px, 2.5vw, 9px);
     font-weight: 700;
     letter-spacing: 2px;
     color: var(--text-muted);
     text-transform: uppercase;
   }
+  .mute-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 2px;
+    opacity: 0.55;
+    transition: opacity 0.15s;
+  }
+  .mute-btn:hover { opacity: 1; }
   .mode-btn {
     background: transparent;
     border: 1px solid var(--border);
@@ -154,22 +175,26 @@ export function getWebviewContent(
     background: rgba(10, 10, 30, 0.88);
     backdrop-filter: blur(4px);
     z-index: 10;
+    /* Safety net: if card taller than panel, scroll rather than clip */
+    overflow-y: auto;
+    padding: 6px 4%;
+    box-sizing: border-box;
   }
+  .overlay-card { flex-shrink: 0; }
   .overlay.hidden { display: none; }
 
   .overlay-card {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 24px 20px;
+    padding: clamp(14px, 5%, 24px) clamp(12px, 5%, 20px);
     text-align: center;
-    max-width: 240px;
-    width: 88%;
+    width: min(92%, 260px);
     box-shadow: 0 24px 48px var(--shadow);
   }
 
   .overlay-ball {
-    font-size: 52px;
+    font-size: clamp(36px, 14vw, 52px);
     line-height: 1;
     margin-bottom: 8px;
     display: block;
@@ -181,14 +206,14 @@ export function getWebviewContent(
   }
 
   .overlay-title {
-    font-size: 18px;
+    font-size: clamp(14px, 5vw, 18px);
     font-weight: 800;
     letter-spacing: 1px;
     margin-bottom: 6px;
     color: var(--accent);
   }
   .overlay-sub {
-    font-size: 12px;
+    font-size: clamp(10px, 3.5vw, 12px);
     color: var(--text-muted);
     margin-bottom: 4px;
     line-height: 1.5;
@@ -196,9 +221,9 @@ export function getWebviewContent(
 
   .btn {
     display: inline-block;
-    padding: 10px 28px;
+    padding: 9px clamp(14px, 6%, 28px);
     border-radius: 8px;
-    font-size: 13px;
+    font-size: clamp(11px, 3.5vw, 13px);
     font-weight: 700;
     letter-spacing: 1px;
     border: none;
@@ -208,19 +233,19 @@ export function getWebviewContent(
   }
   .btn:hover { opacity: 0.88; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
-  .btn-primary { background: var(--accent); color: #0a1628; margin-top: 14px; }
+  .btn-primary { background: var(--accent); color: #0a1628; margin-top: 12px; }
   .btn-secondary {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-muted);
-    font-size: 11px;
-    padding: 6px 14px;
-    margin-top: 8px;
+    font-size: clamp(9px, 3vw, 11px);
+    padding: 5px 12px;
+    margin-top: 6px;
   }
 
   .gameover-scores {
-    margin: 12px 0;
-    padding: 12px;
+    margin: 10px 0;
+    padding: clamp(8px, 3%, 12px);
     background: rgba(255,255,255,0.04);
     border-radius: 10px;
   }
@@ -235,15 +260,15 @@ export function getWebviewContent(
     margin-top: 6px;
     padding-top: 6px;
   }
-  .gameover-lbl { font-size: 11px; color: var(--text-muted); }
-  .gameover-val { font-size: 18px; font-weight: 800; color: var(--accent2); }
+  .gameover-lbl { font-size: clamp(9px, 3vw, 11px); color: var(--text-muted); }
+  .gameover-val { font-size: clamp(14px, 5vw, 18px); font-weight: 800; color: var(--accent2); }
   .gameover-val.new-record::after {
     content: ' 🏆';
     font-size: 14px;
   }
 
   .gameover-title {
-    font-size: 20px;
+    font-size: clamp(16px, 6vw, 20px);
     font-weight: 800;
     color: var(--red);
     margin-bottom: 4px;
@@ -254,16 +279,22 @@ export function getWebviewContent(
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 12px;
+    padding: 5px clamp(6px, 3%, 12px);
     background: var(--panel);
     border-top: 1px solid var(--border);
     flex-shrink: 0;
-    min-height: 28px;
+    min-height: 26px;
+    gap: 4px;
+    overflow: hidden;
   }
   .stats-bar span {
-    font-size: 10px;
+    font-size: clamp(9px, 3vw, 10px);
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
   .stats-bar strong { color: var(--text); }
 
@@ -325,10 +356,83 @@ export function getWebviewContent(
     z-index: 5;
     pointer-events: none;
   }
+
+  /* ── Sidebar compact mode: 2 thin lines of chrome ── */
+  [data-mode="sidebar"] .header {
+    min-height: 28px;
+    padding: 0 8px;
+    gap: 6px;
+  }
+  /* Score blocks go horizontal: label + value side-by-side */
+  [data-mode="sidebar"] .score-block {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  [data-mode="sidebar"] .score-label {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  [data-mode="sidebar"] .score-value {
+    font-size: clamp(13px, 4.5vw, 16px);
+  }
+  /* Title: just the ball emoji, hide text */
+  [data-mode="sidebar"] .title-area  { gap: 4px; }
+  [data-mode="sidebar"] .mute-btn    { font-size: 11px; right: 4px; }
+  [data-mode="sidebar"] .title-emoji { font-size: 14px; }
+  [data-mode="sidebar"] .title-text  { display: none; }
+  [data-mode="sidebar"] .mode-btn    { margin-top: 0; font-size: 9px; padding: 1px 5px; }
+  /* Stats bar: thinner second line */
+  [data-mode="sidebar"] .stats-bar {
+    min-height: 20px;
+    padding: 2px 8px;
+  }
+  [data-mode="sidebar"] .stats-bar span   { font-size: 9px; }
+  [data-mode="sidebar"] .difficulty-badge { font-size: 9px; padding: 1px 4px; }
+  /* Compact achievement toast */
+  [data-mode="sidebar"] .achievement-toast { padding: 6px 12px; }
+  [data-mode="sidebar"] .achievement-toast .badge-icon  { font-size: 16px; }
+  [data-mode="sidebar"] .achievement-toast .badge-title { font-size: 9px; }
+  [data-mode="sidebar"] .achievement-toast .badge-sub   { font-size: 8px; }
+
+  /* Compact overlay cards — shrink to fit short panels */
+  [data-mode="sidebar"] .overlay-card {
+    padding: clamp(10px, 4%, 16px);
+  }
+  [data-mode="sidebar"] .overlay-ball {
+    font-size: clamp(22px, 9vw, 34px);
+    margin-bottom: 4px;
+  }
+  [data-mode="sidebar"] .overlay-title {
+    font-size: clamp(11px, 4vw, 14px);
+    margin-bottom: 3px;
+  }
+  [data-mode="sidebar"] .overlay-sub {
+    font-size: clamp(9px, 3vw, 10px);
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  [data-mode="sidebar"] .btn-primary  { margin-top: 8px; }
+  [data-mode="sidebar"] .btn-secondary { margin-top: 5px; }
+  [data-mode="sidebar"] .gameover-title {
+    font-size: clamp(13px, 5vw, 16px);
+    margin-bottom: 2px;
+  }
+  [data-mode="sidebar"] .gameover-scores {
+    margin: 6px 0;
+    padding: clamp(6px, 3%, 10px);
+  }
+  [data-mode="sidebar"] .gameover-lbl { font-size: 9px; }
+  [data-mode="sidebar"] .gameover-val { font-size: clamp(12px, 4.5vw, 15px); }
+  [data-mode="sidebar"] .gameover-row { padding: 3px 0; }
+  [data-mode="sidebar"] .gameover-row + .gameover-row {
+    margin-top: 4px; padding-top: 4px;
+  }
 </style>
 </head>
 <body>
-<div class="game-root">
+<div class="game-root" data-mode="${mode}">
 
   <!-- Header -->
   <div class="header">
@@ -338,9 +442,10 @@ export function getWebviewContent(
     </div>
     <div class="title-area">
       <span class="title-emoji">⚽</span>
-      <span class="title-text">Juggle</span>
+      <span class="title-text">Juggle Master</span>
       ${mode === 'sidebar' ? '<button id="modeBtn" class="mode-btn" title="Open in Editor Tab">⧉ Tab</button>' : ''}
     </div>
+    <button id="muteBtn" class="mute-btn" title="Toggle Sound">🔊</button>
     <div class="score-block">
       <span class="score-label">Best</span>
       <span class="score-value best-value" id="bestDisplay">${savedBestStreak}</span>
@@ -475,8 +580,14 @@ export function getWebviewContent(
   let floaters  = [];    // "+1" floating text
   let screenFlash = 0;   // frames of white flash
 
+  // Logical canvas dimensions in CSS pixels (game logic always uses these,
+  // not canvas.width/height which are in physical pixels on HiDPI displays).
+  let canvasW = 300;
+  let canvasH = 400;
+
   // ── Audio ─────────────────────────────────────────────────────────
   let audioCtx = null;
+  let muted = false;
   function getAudio() {
     if (!audioCtx) {
       try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
@@ -485,6 +596,7 @@ export function getWebviewContent(
   }
 
   function playTone(freq, endFreq, dur, vol, type) {
+    if (muted) return;
     const ac = getAudio(); if (!ac) return;
     const o = ac.createOscillator();
     const g = ac.createGain();
@@ -518,12 +630,25 @@ export function getWebviewContent(
   // ── Canvas sizing ──────────────────────────────────────────────────
   function resize() {
     const wrapper = canvas.parentElement;
-    canvas.width  = wrapper.clientWidth;
-    canvas.height = wrapper.clientHeight;
+    const dpr = Math.max(window.devicePixelRatio || 1, 1);
+
+    canvasW = wrapper.clientWidth  || 300;
+    canvasH = wrapper.clientHeight || 400;
+
+    // Physical pixel buffer — sharp on HiDPI/Retina displays
+    canvas.width  = Math.round(canvasW * dpr);
+    canvas.height = Math.round(canvasH * dpr);
+    // CSS display size stays at logical pixels
+    canvas.style.width  = canvasW + 'px';
+    canvas.style.height = canvasH + 'px';
+    // Scale context so all draw calls use CSS pixel coordinates
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
     if (ball.x !== undefined) {
-      // keep ball in bounds after resize
-      ball.x = Math.min(Math.max(ball.x, ball.r), canvas.width - ball.r);
-      ball.y = Math.min(ball.y, canvas.height - GROUND_HEIGHT - ball.r - 1);
+      // Update ball radius and clamp position for new dimensions
+      ball.r = Math.min(MAX_BALL_R, Math.max(MIN_BALL_R, Math.floor(canvasW * BALL_RADIUS_FRAC)));
+      ball.x = Math.min(Math.max(ball.x, ball.r), canvasW - ball.r);
+      ball.y = Math.min(ball.y, canvasH - GROUND_HEIGHT - ball.r - 1);
     }
   }
   new ResizeObserver(resize).observe(canvas.parentElement);
@@ -532,10 +657,10 @@ export function getWebviewContent(
   // ── Ball init ─────────────────────────────────────────────────────
   function initBall() {
     const r = Math.min(MAX_BALL_R, Math.max(MIN_BALL_R,
-                Math.floor(canvas.width * BALL_RADIUS_FRAC)));
+                Math.floor(canvasW * BALL_RADIUS_FRAC)));
     ball = {
-      x: canvas.width / 2,
-      y: canvas.height * 0.4,
+      x: canvasW / 2,
+      y: canvasH * 0.4,
       vx: (Math.random() - 0.5) * 2,
       vy: -3,
       r,
@@ -621,11 +746,11 @@ export function getWebviewContent(
   // ── Ground & background ───────────────────────────────────────────
   function drawBackground() {
     // Sky gradient
-    const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    const sky = ctx.createLinearGradient(0, 0, 0, canvasH);
     sky.addColorStop(0, '#0d1b2a');
     sky.addColorStop(1, '#1a2d44');
     ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvasW, canvasH);
 
     // Subtle crowd silhouette at top
     drawCrowd();
@@ -633,41 +758,41 @@ export function getWebviewContent(
     // Pitch lines (subtle)
     ctx.strokeStyle = 'rgba(255,255,255,0.03)';
     ctx.lineWidth = 1;
-    const cx = canvas.width / 2;
+    const cx = canvasW / 2;
     ctx.beginPath();
-    ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height - GROUND_HEIGHT);
+    ctx.moveTo(cx, 0); ctx.lineTo(cx, canvasH - GROUND_HEIGHT);
     ctx.stroke();
 
     // Ground
-    const gY = canvas.height - GROUND_HEIGHT;
-    const gGrad = ctx.createLinearGradient(0, gY, 0, canvas.height);
+    const gY = canvasH - GROUND_HEIGHT;
+    const gGrad = ctx.createLinearGradient(0, gY, 0, canvasH);
     gGrad.addColorStop(0, '#2d5a27');
     gGrad.addColorStop(0.3, '#1e3d19');
     gGrad.addColorStop(1, '#0f1e0d');
     ctx.fillStyle = gGrad;
-    ctx.fillRect(0, gY, canvas.width, GROUND_HEIGHT);
+    ctx.fillRect(0, gY, canvasW, GROUND_HEIGHT);
 
     // Grass line highlight
     ctx.fillStyle = '#3a7a32';
-    ctx.fillRect(0, gY, canvas.width, 3);
+    ctx.fillRect(0, gY, canvasW, 3);
 
     // Danger zone glow when ball is low
     if (state === 'playing') {
-      const dist = (canvas.height - GROUND_HEIGHT) - (ball.y + ball.r);
+      const dist = (canvasH - GROUND_HEIGHT) - (ball.y + ball.r);
       if (dist < 60) {
         const alpha = Math.min(0.35, (60 - dist) / 60 * 0.35);
         const dangerGrad = ctx.createLinearGradient(0, gY - 60, 0, gY);
         dangerGrad.addColorStop(0, 'rgba(220,50,50,0)');
         dangerGrad.addColorStop(1, 'rgba(220,50,50,' + alpha + ')');
         ctx.fillStyle = dangerGrad;
-        ctx.fillRect(0, gY - 60, canvas.width, 60);
+        ctx.fillRect(0, gY - 60, canvasW, 60);
       }
     }
   }
 
   function drawCrowd() {
-    const w = canvas.width;
-    const yBase = canvas.height * 0.08;
+    const w = canvasW;
+    const yBase = canvasH * 0.08;
     ctx.fillStyle = 'rgba(255,255,255,0.04)';
     for (let i = 0; i < Math.floor(w / 8); i++) {
       const x = i * 8 + 4;
@@ -742,7 +867,7 @@ export function getWebviewContent(
     ctx.save();
     ctx.globalAlpha = (screenFlash / 8) * 0.3;
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvasW, canvasH);
     ctx.restore();
     screenFlash--;
   }
@@ -766,8 +891,8 @@ export function getWebviewContent(
       ball.x = ball.r;
       ball.vx = Math.abs(ball.vx) * 0.75;
     }
-    if (ball.x + ball.r > canvas.width) {
-      ball.x = canvas.width - ball.r;
+    if (ball.x + ball.r > canvasW) {
+      ball.x = canvasW - ball.r;
       ball.vx = -Math.abs(ball.vx) * 0.75;
     }
 
@@ -782,8 +907,8 @@ export function getWebviewContent(
     }
 
     // Ground collision → game over
-    if (ball.y + ball.r >= canvas.height - GROUND_HEIGHT) {
-      ball.y = canvas.height - GROUND_HEIGHT - ball.r;
+    if (ball.y + ball.r >= canvasH - GROUND_HEIGHT) {
+      ball.y = canvasH - GROUND_HEIGHT - ball.r;
       endGame();
     }
 
@@ -863,8 +988,10 @@ export function getWebviewContent(
     // Match visual ball exactly — coords are pixel-perfect via offsetX/Y
     if (dist > ball.r) return;
 
-    // Upward impulse
-    ball.vy = JUMP_VELOCITY;
+    // Upward impulse — scaled so the ball jumps at most 35% of canvas height.
+    // Prevents the ball flying off-screen in tall panel views.
+    const maxJumpPx = Math.min(canvasH * 0.35, 220);
+    ball.vy = -Math.sqrt(2 * BASE_GRAVITY * maxJumpPx);
 
     // Horizontal nudge based on click position within ball
     const nudge = (dx / ball.r) * 3.5;
@@ -975,6 +1102,11 @@ export function getWebviewContent(
   if (modeBtnEl) {
     modeBtnEl.addEventListener('click', () => postMsg({ type: 'openInEditor' }));
   }
+
+  document.getElementById('muteBtn').addEventListener('click', () => {
+    muted = !muted;
+    document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
+  });
 
   document.addEventListener('keydown', e => {
     switch (e.key.toLowerCase()) {

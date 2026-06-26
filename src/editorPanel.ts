@@ -36,7 +36,7 @@ export class FootballJugglePanel {
 
         const panel = vscode.window.createWebviewPanel(
             FootballJugglePanel.viewType,
-            '⚽ Football Juggle',
+            'Juggle Master',
             column || vscode.ViewColumn.One,
             { enableScripts: true, retainContextWhenHidden: true }
         );

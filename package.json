@@ -31,7 +31,7 @@
         {
           "type": "webview",
           "id": "footballJuggle.gameView",
-          "name": "⚽ Juggle Master",
+          "name": "Juggle Master",
           "when": "true"
         }
       ]

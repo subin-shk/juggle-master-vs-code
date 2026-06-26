@@ -3,6 +3,14 @@ import { FootballJuggleSidebarProvider } from './sidebarProvider';
 import { FootballJugglePanel } from './editorPanel';
 
 export function activate(context: vscode.ExtensionContext): void {
+    // On first install the globalState key won't exist, so scores default to 0.
+    // Wipe any stale data that may have been left over from development testing.
+    if (!context.globalState.get('footballJuggle.version')) {
+        context.globalState.update('footballJuggle.bestStreak', 0);
+        context.globalState.update('footballJuggle.totalAttempts', 0);
+        context.globalState.update('footballJuggle.version', '0.0.1');
+    }
+
     const sidebarProvider = new FootballJuggleSidebarProvider(context);
 
     context.subscriptions.push(
