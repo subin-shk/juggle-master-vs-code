@@ -17,12 +17,11 @@
     "commands": [
       {
         "command": "footballJuggle.startGame",
-        "title": "Juggle Master: Start Game",
-        "category": "Juggle Master"
+        "title": "Juggle Master"
       },
       {
         "command": "footballJuggle.switchMode",
-        "title": "Juggle Master: Switch Launch Mode",
+        "title": "Switch Launch Mode",
         "category": "Juggle Master"
       }
     ],
