@@ -1,0 +1,73 @@
+{
+  "name": "juggle-master",
+  "displayName": "Juggle Master",
+  "description": "A football juggling mini-game inside VS Code. Keep the ball in the air!",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": ["Other"],
+  "keywords": ["game", "football", "soccer", "juggle", "fun"],
+  "activationEvents": [
+    "onCommand:footballJuggle.startGame",
+    "onView:footballJuggle.gameView"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "footballJuggle.startGame",
+        "title": "Juggle Master: Start Game",
+        "category": "Juggle Master"
+      },
+      {
+        "command": "footballJuggle.switchMode",
+        "title": "Juggle Master: Switch Launch Mode",
+        "category": "Juggle Master"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "footballJuggle.gameView",
+          "name": "⚽ Juggle Master",
+          "when": "true"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Juggle Master",
+      "properties": {
+        "footballJuggle.openMode": {
+          "type": "string",
+          "enum": ["sidebar", "editor"],
+          "default": "sidebar",
+          "enumDescriptions": [
+            "Open the game in the Explorer sidebar panel",
+            "Open the game in a dedicated editor tab"
+          ],
+          "description": "Controls where Juggle Master opens."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "footballJuggle.startGame",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f",
+        "when": "!editorFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
