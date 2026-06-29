@@ -1078,6 +1078,8 @@ export function getWebviewContent(
     e.preventDefault();
     kickBall(e.offsetX, e.offsetY);
   });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('contextmenu', e => e.preventDefault());
 
   // Visual cursor feedback: pointer when hovering over the ball
   canvas.addEventListener('pointermove', e => {
