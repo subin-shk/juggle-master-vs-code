@@ -38,7 +38,7 @@ export class FootballJugglePanel {
             FootballJugglePanel.viewType,
             'Juggle Master',
             column || vscode.ViewColumn.One,
-            { enableScripts: true, retainContextWhenHidden: true }
+            { enableScripts: true, retainContextWhenHidden: true, localResourceRoots: [] }
         );
 
         FootballJugglePanel._instance = new FootballJugglePanel(panel, context);
@@ -59,14 +59,17 @@ export class FootballJugglePanel {
 
     private _handleMessage(msg: { type: string; bestStreak?: number; totalAttempts?: number }): void {
         switch (msg.type) {
-            case 'saveScore':
-                if (msg.bestStreak !== undefined) {
-                    this._context.globalState.update('footballJuggle.bestStreak', msg.bestStreak);
+            case 'saveScore': {
+                const best     = msg.bestStreak;
+                const attempts = msg.totalAttempts;
+                if (typeof best === 'number' && Number.isFinite(best) && best >= 0 && best <= 100000) {
+                    this._context.globalState.update('footballJuggle.bestStreak', Math.floor(best));
                 }
-                if (msg.totalAttempts !== undefined) {
-                    this._context.globalState.update('footballJuggle.totalAttempts', msg.totalAttempts);
+                if (typeof attempts === 'number' && Number.isFinite(attempts) && attempts >= 0 && attempts <= 1000000) {
+                    this._context.globalState.update('footballJuggle.totalAttempts', Math.floor(attempts));
                 }
                 break;
+            }
             case 'openInSidebar':
                 vscode.commands.executeCommand('footballJuggle.gameView.focus');
                 break;

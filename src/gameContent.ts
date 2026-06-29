@@ -12,6 +12,9 @@ export function getWebviewContent(
     savedTotalAttempts: number,
     mode: 'sidebar' | 'editor' = 'sidebar'
 ): string {
+    const safeBest     = Math.max(0, Math.floor(Number(savedBestStreak)   || 0));
+    const safeAttempts = Math.max(0, Math.floor(Number(savedTotalAttempts) || 0));
+
     const csp = [
         `default-src 'none'`,
         `style-src 'unsafe-inline'`,
@@ -448,7 +451,7 @@ export function getWebviewContent(
     <button id="muteBtn" class="mute-btn" title="Toggle Sound">🔊</button>
     <div class="score-block">
       <span class="score-label">Best</span>
-      <span class="score-value best-value" id="bestDisplay">${savedBestStreak}</span>
+      <span class="score-value best-value" id="bestDisplay">${safeBest}</span>
     </div>
   </div>
 
@@ -516,7 +519,7 @@ export function getWebviewContent(
 
   <!-- Stats bar -->
   <div class="stats-bar">
-    <span>Attempts: <strong id="attemptsBar">${savedTotalAttempts}</strong></span>
+    <span>Attempts: <strong id="attemptsBar">${safeAttempts}</strong></span>
     <span class="difficulty-badge" id="diffBadge">Normal</span>
   </div>
 </div>
@@ -568,8 +571,8 @@ export function getWebviewContent(
 
   // ── State ─────────────────────────────────────────────────────────
   let state = 'start'; // 'start' | 'playing' | 'paused' | 'gameover'
-  let bestStreak    = ${savedBestStreak};
-  let totalAttempts = ${savedTotalAttempts};
+  let bestStreak    = ${safeBest};
+  let totalAttempts = ${safeAttempts};
   let streak        = 0;
   let gravity       = BASE_GRAVITY;
   let rafId         = null;

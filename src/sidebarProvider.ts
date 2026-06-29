@@ -18,6 +18,7 @@ export class FootballJuggleSidebarProvider implements vscode.WebviewViewProvider
 
         webviewView.webview.options = {
             enableScripts: true,
+            localResourceRoots: [],
         };
 
         const bestStreak    = this._context.globalState.get<number>('footballJuggle.bestStreak', 0);
@@ -40,14 +41,17 @@ export class FootballJuggleSidebarProvider implements vscode.WebviewViewProvider
 
     private _handleMessage(msg: { type: string; bestStreak?: number; totalAttempts?: number }): void {
         switch (msg.type) {
-            case 'saveScore':
-                if (msg.bestStreak !== undefined) {
-                    this._context.globalState.update('footballJuggle.bestStreak', msg.bestStreak);
+            case 'saveScore': {
+                const best     = msg.bestStreak;
+                const attempts = msg.totalAttempts;
+                if (typeof best === 'number' && Number.isFinite(best) && best >= 0 && best <= 100000) {
+                    this._context.globalState.update('footballJuggle.bestStreak', Math.floor(best));
                 }
-                if (msg.totalAttempts !== undefined) {
-                    this._context.globalState.update('footballJuggle.totalAttempts', msg.totalAttempts);
+                if (typeof attempts === 'number' && Number.isFinite(attempts) && attempts >= 0 && attempts <= 1000000) {
+                    this._context.globalState.update('footballJuggle.totalAttempts', Math.floor(attempts));
                 }
                 break;
+            }
             case 'openInEditor':
                 FootballJugglePanel.createOrShow(this._context);
                 break;
