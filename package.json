@@ -3,7 +3,7 @@
   "displayName": "Juggle Master",
   "publisher": "SubinShakya",
   "description": "A football juggling mini-game inside VS Code. Keep the ball in the air!",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.74.0"
   },

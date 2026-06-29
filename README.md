@@ -70,16 +70,3 @@ VS Code `1.74.0` or higher.
 |---------|---------|-------------|
 | `footballJuggle.openMode` | `sidebar` | Where the game opens — `sidebar` or `editor` |
 
----
-
-## Contributing
-
-Pull requests are welcome. To run locally:
-
-```bash
-git clone https://github.com/subin-shk/juggle-master-vs-code.git
-cd juggle-master-vs-code
-npm install
-npm run compile
-# Press F5 in VS Code to launch the Extension Development Host
-```
